@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+{% load staticfiles %}
+{% load filters2 %}
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<title>天天生鲜-用户中心</title>
+	<link rel="stylesheet" type="text/css" href="{% static 'css/reset.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    block topfiles %}
+    <script src="{% static 'js/jquery-1.12.4.min.js' %}"></script>
+    <script>
+    $(function () {
+        $('table.order_list_table').each(function () {
+            $(this).find('ul.order_goods_list').each(function () {
+                // 1.获取商品价格
+                goods_price = $(this).find('em').text()
+                goods_price = parseFloat(goods_price)
+                // 2.获取商品的数目
+                goods_count = $(this).children('li.col03').text()
+                goods_count = parseInt(goods_count)
+                // 3.计算商品小计并设置
+                total_price = goods_price*goods_count
+                $(this).children('li.col04').text(total_price.toFixed(2))
+            })
+        })
+    })
+    </script>
+</head>
+<body>
+	<div class="header_con">
+		<div class="header">
+			<div class="welcome fl">欢迎来到天天生鲜!</div>
+			<div class="fr">
+                {% if request.session.is_login %}
+				<div class="login_btn fl">
+					欢迎您：<em>{{ request.session.username }}</em>
+                    <span>|</span>
+					<a href="/user/logout/">退出</a>
+				</div>
+                {% else %}
+				<div class="login_btn fl">
+					<a href="login.html">登录</a>
+					<span>|</span>
+					<a href="register.html">注册</a>
+				</div>
+                {% endif %}
+				<div class="user_link fl">
+					<span>|</span>
+					<a href="user_center_info.html">用户中心</a>
+					<span>|</span>
+					<a href="/cart/">我的购物车</a>
+					<span>|</span>
+					<a href="/user/order/">我的订单</a>
+				</div>
+			</div>
+		</div>		
+	</div>
+
+	<div class="search_bar clearfix">
+		<a href="index.html" class="logo fl"><img src="{% static 'images/logo.png' %}"></a>
+		<div class="sub_page_name fl">|&nbsp;&nbsp;&nbsp;&nbsp;用户中心</div>
+		<div class="search_con fr">
+            <form action="/search/" method="get">
+
+			<input type="text" class="input_text fl" name="q" placeholder="搜索商品">
+			<input type="submit" class="input_btn fr" name="" value="搜索">
+            </form>
+		</div>
+	</div>
+
+	<div class="main_con clearfix">
+		<div class="left_menu_con clearfix">
+			<h3>用户中心</h3>
+			<ul>
+				<li><a href="/user/">· 个人信息</a></li>
+				<li><a href="/user/order/" class="active">· 全部订单</a></li>
+				<li><a href="/user/site/">· 收货地址</a></li>
+			</ul>
+		</div>
+	<div class="right_content clearfix">
+				<h3 class="common_title2">全部订单</h3>
+                {% for order_basic in order_basic_list %}
+				<ul class="order_list_th w978 clearfix">
+					<li class="col01">{{ order_basic.create_time|date:'Y-m-d H:i:s' }}</li>
+					<li class="col02">订单号：{{ order_basic.order_id }}</li>
+					<li class="col02 stress">{{ order_basic.order_status|order_status }}</li>
+				</ul>
+
+				<table class="order_list_table w980">
+					<tbody>
+						<tr>
+							<td width="55%">
+                                {% for order_detail in order_basic.order_detail_list %}
+								<ul class="order_goods_list clearfix">
+									<li class="col01"><img src="{% static order_detail.goods.img_url %}"></li>
+									<li class="col02">{{ order_detail.goods.goods_name }}<em>{{ order_detail.goods.goods_price }}/{{ order_detail.goods.goods_unite }}</em></li>
+									<li class="col03">{{ order_detail.goods_count }}</li>
+									<li class="col04">11.80元</li>
+								</ul>
+                                {% endfor %}
+							</td>
+							<td width="15%">{{ order_basic.total_price }}</td>
+							<td width="15%">待付款</td>
+							<td width="15%"><a href="#" class="oper_btn">{{ order_basic.order_status|order_status }}</a></td>
+						</tr>
+					</tbody>
+				</table>
+                {% endfor %}
+				<div class="pagenation">
+					<a href="#">&lt;</a>
+					<a href="#" class="active">1</a>
+					<a href="#">2</a>
+					<a href="#">3</a>
+					<a href="#">4</a>
+					<a href="#">5</a>
+					<a href="#">下一页&gt;</a>
+				</div>
+		</div>
+	</div>
+
+
+
+	<div class="footer">
+		<div class="foot_link">
+			<a href="#">关于我们</a>
+			<span>|</span>
+			<a href="#">联系我们</a>
+			<span>|</span>
+			<a href="#">招聘人才</a>
+			<span>|</span>
+			<a href="#">友情链接</a>		
+		</div>
+		<p>CopyRight © 2016 北京天天生鲜信息技术有限公司 All Rights Reserved</p>
+		<p>电话：010-****888    京ICP备*******8号</p>
+	</div>
+	
+</body>
+</html>
