@@ -1,6 +1,3 @@
-/**
- * Created by python on 17-9-20.
- */
 $(function () {
     var $username = $('#username'),
         $password = $('#password'),
@@ -22,22 +19,16 @@ $(function () {
             'ContextType': 'json',
             'data': post_data
         }).done(function (res) {
-            {# res数据
-                {
-                    'username_checked'
-                :
-                    true, 'password_checked'
-                :
-                    true
-                } #
-            }
+            // res = {
+            //     'username_checked': true, 'password_checked': true
+            // };
             console.log(res);
             var username_checked = res.username_checked,
                 password_checked = res.password_checked;
             $user_error.hide();
             $pwd_error.hide();
             if (username_checked && password_checked) {
-                location.href = '{% url "main:index" %}'
+                location.href = '{% url "main:index" %}';
             }
             else {
                 if (!username_checked) {
@@ -49,4 +40,4 @@ $(function () {
             }
         });
     });
-})
+});
